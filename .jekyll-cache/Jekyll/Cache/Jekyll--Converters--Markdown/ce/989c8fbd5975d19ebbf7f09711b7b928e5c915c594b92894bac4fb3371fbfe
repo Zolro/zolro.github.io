@@ -1,0 +1,9 @@
+I"�<p>为了方便自己和他人引用我所写的java库，发布到 Maven/JCenter 上是最好不过了，利己利人，本文主要参考了</p>
+
+<p><a href="http://blog.csdn.net/maosidiaoxian/article/details/43148643">使用Gradle发布项目到JCenter仓库</a></p>
+
+<p><a href="https://github.com/msdx/gradle-publish">Git项目: Gradle Publish</a></p>
+
+<p>虽然这篇已经很详细的，但是我在实际操作中还是碰到了一些问题，所以自己再整理一遍，方便以后查阅</p>
+
+:ET

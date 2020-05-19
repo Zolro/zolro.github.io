@@ -1,0 +1,43 @@
+I"�	<p>Jekyll 的语法高亮在 Jekyll 3.0 以上默认使用的是 <a href="http://rouge.jneen.net/">Rouge</a>,
+如果使用的是 Jekyll 2, 需要在配置文件里面设置 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>highlighter
+</pre></td></tr></tbody></table></code> 为 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>rouge
+</pre></td></tr></tbody></table></code>,
+ 并确保 rouge 被正确的安装了</p>
+
+<p><strong>[表示此方法我没成功]</strong></p>
+
+<hr />
+
+<p>另外, 就是使用 <a href="http://pygments.org/">Pygments</a>, 这个需要使用 Python 来安装</p>
+
+<p>如果你不想麻烦, 可以直接使用我的这个 <a href="/assets/css/syntax.css">syntax.css</a>,
+ 这个就是最后使用 pygments 生成的默认的代码高亮 css 文件</p>
+
+<ul>
+  <li>
+    <p>把这个 syntax.css 放在 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>/assets/css/syntax.css
+</pre></td></tr></tbody></table></code></p>
+  </li>
+  <li>
+    <p>在 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>_include/head.html
+</pre></td></tr></tbody></table></code> 或者你自己的通用头文件里面添加 link</p>
+  </li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"/assets/css/highlight.css"</span><span class="nt">&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ul>
+  <li>然后再 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>_config.yml
+</pre></td></tr></tbody></table></code> 设置 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>highlight: true
+</pre></td></tr></tbody></table></code></li>
+</ul>
+
+:ET

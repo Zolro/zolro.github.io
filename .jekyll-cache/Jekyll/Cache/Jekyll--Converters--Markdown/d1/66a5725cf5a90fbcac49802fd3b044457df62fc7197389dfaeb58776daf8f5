@@ -1,0 +1,85 @@
+I"�<p>Jekyll 的语法高亮在 Jekyll 3.0 以上默认使用的是 <a href="http://rouge.jneen.net/">Rouge</a>,
+如果使用的是 Jekyll 2, 需要在配置文件里面设置 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>highlighter
+</pre></td></tr></tbody></table></code> 为 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>rouge
+</pre></td></tr></tbody></table></code>,
+ 并确保 rouge 被正确的安装了</p>
+
+<p><strong>[表示此方法我没成功]</strong></p>
+
+<hr />
+
+<p>另外, 就是使用 <a href="http://pygments.org/">Pygments</a>, 这个需要使用 Python 来安装</p>
+
+<p>如果你不想麻烦, 可以直接使用我的这个 <a href="/assets/css/syntax.css">syntax.css</a>,
+ 这个就是最后使用 pygments 生成的默认的代码高亮 css 文件</p>
+
+<ul>
+  <li>
+    <p>把这个 syntax.css 放在 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>/assets/css/syntax.css
+</pre></td></tr></tbody></table></code></p>
+  </li>
+  <li>
+    <p>在 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>_include/head.html
+</pre></td></tr></tbody></table></code> 或者你自己的通用头文件里面添加 link</p>
+  </li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"/assets/css/highlight.css"</span><span class="nt">&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ul>
+  <li>然后再 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>_config.yml
+</pre></td></tr></tbody></table></code> 设置 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>highlight: true
+</pre></td></tr></tbody></table></code></li>
+</ul>
+
+<h3 id="安装和使用-pygments">安装和使用 <a href="https://pypi.python.org/pypi/Pygments">Pygments</a></h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>pip <span class="nb">install </span>pygments
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>安装完成后, 你需要用它来生成一个 css 文件, 放在你的 jekyll 项目中, 生成命令为</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>pygmentize <span class="nt">-S</span> default <span class="nt">-f</span> html <span class="o">&gt;</span> style.css
+<span class="c"># 这个 -S 就是 style, 默认的style 为 firendly 具体得 style 可以参考 [Styles](http://pygments.org/docs/styles/)</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>这个 style.css 就是我们所需要的.
+详细的 Pygments 的使用请参考其 <a href="http://pygments.org/docs/">官方文档</a></p>
+
+<h3 id="ps--_-">PS -_-!!</h3>
+
+<h4 id="python-和-pip-安装和使用"><a href="https://www.python.org">Python</a> 和 <a href="https://pypi.python.org/pypi/pip/#downloads">pip</a> 安装和使用</h4>
+
+<ul>
+  <li>
+    <p>下载安装 <a href="https://www.python.org/downloads">Python</a></p>
+  </li>
+  <li>
+    <p>将 Python 的安装路径加入到环境变量 path</p>
+  </li>
+  <li>
+    <p>下载 <a href="https://pypi.python.org/pypi/pip/#downloads">pip</a> 安装包, 解压后进入到其目录, 使用此命令安装</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>python setup.py <span class="nb">install</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ul>
+  <li>完成安装后, 在把 Python 安装目录下的 scripts 目录也加入到环境变量 path 里面</li>
+</ul>
+
+<p>然后就可以用 pip 安装 Python 包了</p>
+:ET

@@ -1,0 +1,498 @@
+I"�^<p><a href="https://github.com/liungkejin/ExRecyclerView">ExRecyclerView</a>
+<em>ExRecyclerView 使用 Kotlin 编写</em></p>
+
+<p><img src="/assets/demo/exrecyclerview-demo.gif" alt="demo" /></p>
+
+<p>很多时候我们在使用 RecyclerView 时, 总是会碰到需要设置一个 header 或者 footer 的情况,
+比如我们要加一个显示加载更多的footer，跟随 RecyclerView 一起滑动的 header, 等等,
+这种情况如果是 ListView 我们可以简单的使用 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>addHeaderView()
+</pre></td></tr></tbody></table></code> 或者 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>addFooterView()
+</pre></td></tr></tbody></table></code>
+就可以解决, 但是 RecyclerView 就需要我们自己来进行处理. 虽然说不困难,
+但是每次都要重新实现一遍就很麻烦了.</p>
+
+<p>ExRecyclerView一共实现了3个功能:</p>
+
+<ol>
+  <li>能添加和删除 header 和 footer</li>
+  <li>滑到底部时回调加载更多</li>
+  <li>支持 Drag 和 Swipe 拖动 item 或者 swipe 删除 item (可以自定义拖动,滑动的样式)</li>
+</ol>
+
+<p>ExRecyclerAdapter 是一个内置了 List 集合的 RecyclerAdapter,
+每次改变数据都会主动进行相应的notify(也可以主动不进行 notify)</p>
+
+<h2 id="exrecyclerview">ExRecyclerView</h2>
+
+<h3 id="usage">Usage</h3>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="nt">&lt;cn.kejin.android.views.ExRecyclerView</span>
+    <span class="na">android:id=</span><span class="s">"@+id/exRecycler"</span>
+    <span class="na">android:layout_margin=</span><span class="s">"50dp"</span>
+    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+    <span class="na">android:layout_height=</span><span class="s">"match_parent"</span>
+    <span class="na">app:header=</span><span class="s">"@layout/layout_header"</span>
+    <span class="na">app:footer=</span><span class="s">"@layout/layout_footer"</span><span class="nt">/&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="rouge-code"><pre><span class="n">exRecycler</span><span class="o">.</span><span class="na">layoutManager</span> <span class="o">=</span> <span class="nc">LinearLayoutManager</span><span class="o">(</span><span class="k">this</span><span class="o">)</span>
+<span class="n">exRecycler</span><span class="o">.</span><span class="na">adapter</span> <span class="o">=</span> <span class="nc">Adapter</span><span class="o">(</span><span class="k">this</span><span class="o">)</span>
+<span class="n">exRecycler</span><span class="o">.</span><span class="na">addHeader</span><span class="o">(</span><span class="n">header</span><span class="o">)</span>
+<span class="n">exRecycler</span><span class="o">.</span><span class="na">addFooter</span><span class="o">(</span><span class="n">footer</span><span class="o">)</span>
+
+<span class="n">exRecycler</span><span class="o">.</span><span class="na">setOnLoadMoreListener</span> <span class="o">{</span>
+    <span class="c1">// do load more, 结束之后调用 exRecycler.endLoadMore() 结束loading more的状态</span>
+<span class="o">}</span>
+
+<span class="n">exRecycler</span><span class="o">.</span><span class="na">itemActionListener</span> <span class="o">=</span> <span class="n">listener</span>
+<span class="c1">// 如果使用自定义 ItemTouchHelper</span>
+<span class="n">exRecycler</span><span class="o">.</span><span class="na">itemTouchHelper</span> <span class="o">=</span> <span class="n">customItemTouchHelper</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h3 id="header--footer">Header &amp; footer</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>方法/属性</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>app:header
+</pre></td></tr></tbody></table></code></td>
+      <td>在 xml 布局中定义 header view</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>app:footer
+</pre></td></tr></tbody></table></code></td>
+      <td>在 xml 布局中定义 footer view</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>getHeader()
+</pre></td></tr></tbody></table></code></td>
+      <td>获取定义在 xml 中的 header view</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>getFooter()
+</pre></td></tr></tbody></table></code></td>
+      <td>获取定义在 xml 中的 footer view</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>removeHeader()
+</pre></td></tr></tbody></table></code></td>
+      <td>移除定义在 xml 中的 header</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>removeFooter()
+</pre></td></tr></tbody></table></code></td>
+      <td>移除定义在 xml 中的 footer</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>getHeaderSize()
+</pre></td></tr></tbody></table></code></td>
+      <td>header size</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>hasHeader(view)
+</pre></td></tr></tbody></table></code></td>
+      <td>判断是否有此header</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>addHeader(view)
+</pre></td></tr></tbody></table></code></td>
+      <td>加入一个 header, 并返回它的 hashcode, 可以根据这个 hashcode 找到或者删除这个header</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>getHeader(hashcode)
+</pre></td></tr></tbody></table></code></td>
+      <td>根据 view 的 hashcode 找到这个header</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>removeHeader(view)
+</pre></td></tr></tbody></table></code> <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>removeHeader(hashcode)
+</pre></td></tr></tbody></table></code></td>
+      <td>根据 view 或者他的 hashcode 移除掉这个 header</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>getFooterSize()
+</pre></td></tr></tbody></table></code></td>
+      <td>footer size</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>hasFooter(view)
+</pre></td></tr></tbody></table></code></td>
+      <td>判断是否有此footer</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>addFooter(view)
+</pre></td></tr></tbody></table></code></td>
+      <td>加入一个 footer, 并返回它的 hashcode, 这个根据这个 hashcode 获取或者删除这个footer</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>getFooter(hashcode)
+</pre></td></tr></tbody></table></code></td>
+      <td>根据 view 的 hashcode 找到这个footer</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>removeFooter(view)
+</pre></td></tr></tbody></table></code> <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>removeFooter(hashcode)
+</pre></td></tr></tbody></table></code></td>
+      <td>根据 view 或者他的 hashcode 移除掉这个 footer</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>getItemCount()
+</pre></td></tr></tbody></table></code></td>
+      <td>获取所有的 Item 个数</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>这些 header 和 footer 都是不会被 RecyclerView 进行回收的, 所以注意避免加入过多的 header 或者 footer.</p>
+
+<h3 id="onloadmorelistener">OnLoadMoreListener</h3>
+
+<p>当 ExRecyclerView 滑动到底部(倒数第二个可见) 时，就会回调表示可以进行 load more 操作.
+但是要注意的是当 回调了 load more 之后, ExRecyclerView 会把状态置为 loadingMore 状态,
+即不允许在正在执行 load more 操作时再回调 load more 事件, 当 load more 结束之后,
+就必须要调用 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>exRecycler.endLoadMore()
+</pre></td></tr></tbody></table></code> 来结束 loadingMore 状态.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="kd">interface</span> <span class="nc">OnLoadMoreListener</span> <span class="o">{</span>
+    <span class="cm">/**
+     * @return Boolean 是否处理了loadmore操作,
+     * 如果返回true, 表示进行了 loadmore 操作,
+     *      则在没有调用 endLoadMore() 之前不会再回调 loadmore
+     * 如果返回false, 表示没有进行 loadmore 操作, 则继续监听滑动
+     */</span>
+    <span class="n">fun</span> <span class="nf">onLoadMore</span><span class="o">():</span> <span class="nc">Boolean</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>属性/方法</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>isLoadingMore
+</pre></td></tr></tbody></table></code></td>
+      <td>判断是否正在loading more 的状态, 如果为true, 则表示正在加载更多, ExRecyclerView 不会再回调loadmore 操作</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>loadMoreListener
+</pre></td></tr></tbody></table></code> <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>setOnLoadMoreListener
+</pre></td></tr></tbody></table></code></td>
+      <td>设置监听</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>endLoadMore()
+</pre></td></tr></tbody></table></code></td>
+      <td>将isLoadingMore 的状态置为 false, 让 ExRecyclerView 继续监听到底回调 loadmore 操作</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="drag--swipe">Drag &amp; Swipe</h3>
+
+<p>Drag Move 和 Swipe Dismiss 的实现, 我参考了 <a href="https://medium.com/@ipaulpro/drag-and-swipe-with-recyclerview-b9456d2b1aaf#.2g0vy5xp0">Drag and Swipe with RecyclerView</a>
+但是我觉得他写的有点复杂了, 可能是他写的类和接口太多了吧 -_-!!</p>
+
+<p>Drag &amp; Swipe 的实现是用了 <a href="https://developer.android.com/reference/android/support/v7/widget/helper/ItemTouchHelper.html">ItemTouchHelper</a> 这个帮助类,
+ExRecyclerView 内部已经实例化了一个 ItemTouchHelper, 并已经进行了 Attach,
+如果你想完全用自己的 ItemTouchHelper, 只要将你的 ItemTouchHelper attach ExRecyclerView 就可以,
+不过要注意不能移动 header 或者 footer, 还有将ExRecyclerView 的内部变量 itemTouchCallback = null, itemActionListener = null;</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>属性/方法</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>itemTouchHelper
+</pre></td></tr></tbody></table></code></td>
+      <td>ExRecyclerView 的内置 ItemTouchHelper</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>itemTouchCallback
+</pre></td></tr></tbody></table></code></td>
+      <td>自定义的ItemTouchHelper.Callback</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>itemActionListener
+</pre></td></tr></tbody></table></code></td>
+      <td>ItemActionListener的实现</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="itemactionlistener">ItemActionListener</h3>
+
+<p>ItemActionListener 其实只是把 ItemTouchHelper.Callback 的主要的方法抽离了出来, 方便实现,
+ExRecyclerAdapter 实现了一个简单的 ItemActionListener, 并可以控制 Drag 或者 Swipe 是否可用</p>
+
+<h2 id="exrecycleradapter">ExRecyclerAdapter</h2>
+
+<p>ExRecyclerAdapter 实现了一个简单的ItemActionListener</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>属性/方法</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>set(pos, model)
+</pre></td></tr></tbody></table></code></td>
+      <td>改变某一个位置的数据</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>set(Collectoin&lt;Model&gt;)
+</pre></td></tr></tbody></table></code></td>
+      <td>重新设置所有的数据</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>move(from, to)
+</pre></td></tr></tbody></table></code></td>
+      <td>移动一个数据</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>add(index, model)
+</pre></td></tr></tbody></table></code></td>
+      <td>在index位置加入一个数据</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>add(model)
+</pre></td></tr></tbody></table></code></td>
+      <td>追加一个数据</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>addAll(Collectoin&lt;Model&gt;)
+</pre></td></tr></tbody></table></code></td>
+      <td>追加一个集合数据</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>removeAt(index)
+</pre></td></tr></tbody></table></code></td>
+      <td>移除一个指定的数据</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>remove(model)
+</pre></td></tr></tbody></table></code></td>
+      <td>移除这个 model数据, 如果有多个, 只会移除第一个</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>removeAll(model)
+</pre></td></tr></tbody></table></code></td>
+      <td>移除所有的指定数据</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>clear()
+</pre></td></tr></tbody></table></code></td>
+      <td>清除所有的数据</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>longPressDragEnable
+</pre></td></tr></tbody></table></code></td>
+      <td>是否可用长按拖动</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>itemViewSwipeEnable
+</pre></td></tr></tbody></table></code></td>
+      <td>是否滑动可用</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>enableDragAndSwipe()
+</pre></td></tr></tbody></table></code></td>
+      <td>使两个都可用</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>disableDragAndSwipe()
+</pre></td></tr></tbody></table></code></td>
+      <td>禁用 drag 和 swipe</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>所有的数据操作方法都有一个 notify 参数, 默认为 true, 且如果成功操作数据, 返回 true</p>
+
+<h2 id="ps-itemtouchhelper-的使用">PS <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>ItemTouchHelper
+</pre></td></tr></tbody></table></code> 的使用</h2>
+
+<p>ItemTouchHelper 的是使用也比较简单, 基本步骤就是:</p>
+
+<ol>
+  <li>实现 ItemTouchHelper.Callback 这个类</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="nc">itemTouchCallback</span> <span class="o">:</span> <span class="nc">ItemTouchHelper</span><span class="o">.</span><span class="na">Callback</span><span class="o">()</span> <span class="o">{</span>
+    <span class="cm">/**
+     * 这里返回移动的标志位, 用来指示Drag 和 Swipe 可移动的方向
+     * 比如 dragFlags = TOP | BOTTOM 则表示只能左右拖动 item
+     * swipeFlags = START | END 表示只能水平滑动 item
+     * 最后返回使用 makeMovementFlags(dragFlags, swipeFlags) 返回
+     */</span>
+    <span class="n">override</span> <span class="n">fun</span> <span class="nf">getMovementFlags</span><span class="o">(</span>
+                        <span class="nl">recyclerView:</span> <span class="nc">RecyclerView</span><span class="o">?,</span>
+                        <span class="nl">viewHolder:</span> <span class="nc">ViewHolder</span><span class="o">?):</span> <span class="nc">Int</span> <span class="o">{</span> <span class="o">}</span>
+
+    <span class="cm">/**
+     * 当一个 item 被拖动到另一个 item(target) 上时,
+     * 如果这个target可以移动, 会请求一次 onMove
+     * 如果返回 true, 则表示两个 item 交换位置成功,
+     * 所以会在这里进行 Adapter 的数据交换, 保证移动正确
+     */</span>
+    <span class="n">override</span> <span class="n">fun</span> <span class="nf">onMove</span><span class="o">(</span>
+                    <span class="nl">recyclerView:</span> <span class="nc">RecyclerView</span><span class="o">?,</span>
+                    <span class="nl">viewHolder:</span> <span class="nc">ViewHolder</span><span class="o">?,</span>
+                    <span class="nl">target:</span> <span class="nc">ViewHolder</span><span class="o">?):</span> <span class="nc">Boolean</span> <span class="o">{</span> <span class="o">}</span>
+
+    <span class="cm">/**
+     * 当一个 item 完成了一次有效的滑动,
+     * 会回调 onSwiped, direction 表示滑动的方向(START 或者 END)
+     */</span>
+    <span class="n">override</span> <span class="n">fun</span> <span class="nf">onSwiped</span><span class="o">(</span><span class="nl">viewHolder:</span> <span class="nc">ViewHolder</span><span class="o">?,</span> <span class="nl">direction:</span> <span class="nc">Int</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ol>
+  <li>使用这个 Callback 实例化 ItemTouchHelper</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="n">val</span> <span class="n">itemTouchHelper</span> <span class="o">=</span> <span class="nc">ItemTouchHelper</span><span class="o">(</span><span class="n">itemTouchCallback</span><span class="o">())</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ol>
+  <li>将 ItemTouchHelper Attach 到 RecyclerView</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="n">itemTouchHelper</span><span class="o">.</span><span class="na">attachToRecyclerView</span><span class="o">(</span><span class="n">recyclerView</span><span class="o">)</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+:ET

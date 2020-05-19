@@ -1,0 +1,346 @@
+I"�F<p>学习和使用 <a href="https://kotlinlang.org/">Kotlin</a> 来开发安卓已经有一段时间了, 总体来说, 我还是很喜欢 kotlin 这个语言的,
+比 java 用起来感觉轻便很多, 特别是支持 lambda, 委托, 隐式类型转换, 让代码显得特别的精炼.</p>
+
+<p>最主要的是 kotlin 很大程度避免了 java 里面的空指针异常, 而且可以和 java 自由混合.</p>
+
+<p>用 Kotlin 来开发 Android 也极好的, 因为 Kotlin 支持 Java 6+  :)</p>
+
+<p>可以看一下 java 和 kotlin 的语言对比:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+</pre></td><td class="rouge-code"><pre><span class="c1">// java</span>
+<span class="n">view</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="nc">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="nc">View</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">v</span><span class="o">.</span><span class="na">post</span><span class="o">(</span><span class="k">new</span> <span class="nc">Runnable</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+                <span class="c1">//</span>
+            <span class="o">}</span>
+        <span class="o">});</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="c1">// kotlin, lambda, 虽然 Java 8 也支持 lambda 了, 但是 Android 不支持 Java8 ...</span>
+<span class="n">view</span><span class="o">.</span><span class="na">setOnClickListener</span> <span class="o">{</span>
+    <span class="n">it</span><span class="o">.</span><span class="na">post</span> <span class="o">{</span>
+        <span class="c1">// run</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// java, 这里如果 view 为 null, 则会抛出Null异常</span>
+<span class="kt">void</span> <span class="nf">invisibleView</span><span class="o">(</span><span class="nc">View</span> <span class="n">view</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">view</span><span class="o">.</span><span class="na">setVisibility</span><span class="o">(</span><span class="nc">View</span><span class="o">.</span><span class="na">INVISIBLE</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="c1">// kotlin, 这是不允许传入null, 所以不会出现 Null 异常</span>
+<span class="n">fun</span> <span class="nf">invisibleView</span><span class="o">(</span><span class="nl">view:</span> <span class="nc">View</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">view</span><span class="o">.</span><span class="na">visibility</span> <span class="o">=</span> <span class="nc">View</span><span class="o">.</span><span class="na">INVISIBLE</span>
+<span class="o">}</span>
+<span class="c1">// 即使允许传入 null, kotlin 也可以很轻松的避免 Null 异常</span>
+<span class="n">fun</span> <span class="nf">invisibleView</span><span class="o">(</span><span class="nl">view:</span> <span class="nc">View</span><span class="o">?)</span> <span class="o">{</span>
+    <span class="n">view</span><span class="o">?.</span><span class="na">visibility</span> <span class="o">=</span> <span class="nc">View</span><span class="o">.</span><span class="na">INVISIBLE</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>不过kotlin也有一些不如人意的地方, 比如 泛型感觉没有java的好用 (可能是我还没掌握好吧!),</p>
+
+<p>但总的来说 kotlin 是很值得学习的！</p>
+
+<h2 id="配置-android-的工程-android-studio">配置 Android 的工程 (Android Studio)</h2>
+
+<ul>
+  <li>
+    <p>使用 Kotlin 开发 Android, 首先得安装 Kotlin 的插件, 直接在 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>Settings-&gt;Plugins-&gt;Install JetBrains Plugins
+</pre></td></tr></tbody></table></code>搜索
+Kotlin, 搜索出来应该会有两个一个是 Kotlin, 还有一个是 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>Kotlin Extensions For Android
+</pre></td></tr></tbody></table></code>, Kotlin 是必须安装的,
+Extensions 可选. 安装完成后重启 Android Studio.</p>
+  </li>
+  <li>
+    <p>现在 Android Studio 已经安装好了 Kotlin, 拥有了 Kotlin 的编译器, 在菜单栏 Tools 下面多了一个 Kotlin 菜单,
+一般会用到第一个选项 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>Configure Kotlin in Project
+</pre></td></tr></tbody></table></code>, 用来自动配置项目工程, 支持 Kotlin,
+另外在 Code 菜单里面也多了一个 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>Convert Java File to Kotlin File
+</pre></td></tr></tbody></table></code> 选项, 这个选项可以将 Java 代码自动转换为 Kotlin 代码</p>
+  </li>
+  <li>
+    <p>现在你可以新建一个Android工程, 然后使用 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>Tools-&gt;Kotlin-&gt;Configure Kotlin in Project
+</pre></td></tr></tbody></table></code> 配置你的这个工程,
+配置完成后你的项目工程 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>app.gradle
+</pre></td></tr></tbody></table></code> 应该是这样的</p>
+  </li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+</pre></td><td class="rouge-code"><pre><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">'com.android.application'</span>
+<span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">'kotlin-android'</span>
+<span class="n">android</span> <span class="o">{</span>
+    <span class="o">...</span>
+    <span class="n">sourceSets</span> <span class="o">{</span>
+        <span class="n">main</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">srcDirs</span> <span class="o">+=</span> <span class="s1">'src/main/kotlin'</span>
+        <span class="c1">// 可以用 kotlin 写测试, 很方便</span>
+        <span class="n">test</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">srcDirs</span> <span class="o">+=</span> <span class="s1">'src/test/kotlin'</span>
+        <span class="n">androidTest</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">srcDirs</span> <span class="o">+=</span> <span class="s1">'src/androidTest/kotlin'</span>
+    <span class="o">}</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+
+<span class="n">dependencies</span> <span class="o">{</span>
+    <span class="o">...</span>
+    <span class="n">compile</span> <span class="s2">"org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"</span>
+<span class="o">}</span>
+
+<span class="n">buildscript</span> <span class="o">{</span>
+    <span class="n">ext</span><span class="o">.</span><span class="na">kotlin_version</span> <span class="o">=</span> <span class="s1">'1.0.1-2'</span>
+    <span class="n">repositories</span> <span class="o">{</span>
+        <span class="n">mavenCentral</span><span class="o">()</span>
+        <span class="n">jcenter</span><span class="o">()</span>
+    <span class="o">}</span>
+    <span class="n">dependencies</span> <span class="o">{</span>
+        <span class="n">classpath</span> <span class="s2">"org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="n">repositories</span> <span class="o">{</span>
+    <span class="n">jcenter</span><span class="o">()</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>因为 Kotlin 也是基于 JVM 的, 他可以和 Java 代码文件自由混合, 所以其实你可以直接在 src/main/java/ 下面
+创建 Kotlin 类, 然后调用 Java 类/方法, 或者 Java 里面调用 Kotlin 类/方法 :), 上面的配置文件中
+<code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>main.java.srcDirs += 'src/main/kotlin'
+</pre></td></tr></tbody></table></code> 只是为了将 kotlin 和 Java 文件分开</p>
+
+<ul>
+  <li>现在你已经用Kotlin来开发Android的了:), 可以试着将 MainActivity.java 使用 菜单<code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre> code-&gt;Convert Java File to Kotlin File
+</pre></td></tr></tbody></table></code> 选项转换成 MainActivity.kt,
+然后运行工程. 或者你也可以直接新建一个 Kotlin 类, 然后在 MainActivity.java 里面进行调用.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre><span class="kn">package</span> <span class="nn">cn.kejin.android</span>
+
+<span class="kn">import</span> <span class="nn">android.support.v7.app.AppCompatActivity</span>
+
+<span class="kd">class</span> <span class="nc">MainActivity</span> <span class="o">:</span> <span class="nc">AppCompatActivity</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">override</span> <span class="n">fun</span> <span class="nf">onCreate</span><span class="o">(</span><span class="nl">savedInstanceState:</span> <span class="nc">Bundle</span><span class="o">?)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+        <span class="n">setContentView</span><span class="o">(</span><span class="no">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">)</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="使用-kotlin-extensions-for-android">使用 Kotlin Extensions For Android</h2>
+
+<p>Kotlin 为 Android 的开发提供了一个扩展包, 这个扩展包可以简化很多的 Android 代码, 他会自动将 xml布局文件中
+带有 id 的控件映射为对应名字的控件变量, 这样就不再需要我们手动去 findViewById() 了 XD. 例如:</p>
+
+<p>你有一个 activity_main.xml 布局文件:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="nt">&lt;LinearLayout</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+              <span class="na">android:orientation=</span><span class="s">"vertical"</span>
+              <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+              <span class="na">android:layout_height=</span><span class="s">"match_parent"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;TextView</span>
+        <span class="na">android:id=</span><span class="s">"@+id/helloText"</span>
+        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+        <span class="na">android:layout_height=</span><span class="s">"match_parent"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/LinearLayout&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>然后你可以在你的 activity 中这样写</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="kn">package</span> <span class="nn">cn.kejin.android</span>
+
+<span class="kn">import</span> <span class="nn">android.support.v7.app.AppCompatActivity</span>
+<span class="kn">import</span> <span class="nn">kotlinx.android.synthetic.main.activity_main.*</span>
+
+<span class="kd">class</span> <span class="nc">MainActivity</span> <span class="o">:</span> <span class="nc">AppCompatActivity</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">override</span> <span class="n">fun</span> <span class="nf">onCreate</span><span class="o">(</span><span class="nl">savedInstanceState:</span> <span class="nc">Bundle</span><span class="o">?)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+        <span class="n">setContentView</span><span class="o">(</span><span class="no">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">)</span>
+
+        <span class="n">helloText</span><span class="o">.</span><span class="na">text</span> <span class="o">=</span> <span class="s">"Hello, World"</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>这种扩展和直接 findViewById()  性能上是一样的, 不过注意使用这种扩展必须要在 layout 被设置好了才能使用, 在 fagment 里面, 要等到 onViewCreated() 之后才能使用.</p>
+
+<p>Kotlin的配置里面, 默认没有加这个扩展, 所以需要自己手动加入, 将 app.gradle 修改为</p>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+</pre></td><td class="rouge-code"><pre><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">'com.android.application'</span>
+<span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">'kotlin-android'</span>
+<span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">'kotlin-android-extensions'</span>
+
+<span class="n">android</span> <span class="o">{</span>
+    <span class="o">...</span>
+    <span class="n">sourceSets</span> <span class="o">{</span>
+        <span class="n">main</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">srcDirs</span> <span class="o">+=</span> <span class="s1">'src/main/kotlin'</span>
+        <span class="c1">// 可以用 kotlin 写测试, 很方便</span>
+        <span class="n">test</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">srcDirs</span> <span class="o">+=</span> <span class="s1">'src/test/kotlin'</span>
+        <span class="n">androidTest</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">srcDirs</span> <span class="o">+=</span> <span class="s1">'src/androidTest/kotlin'</span>
+    <span class="o">}</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+
+<span class="n">dependencies</span> <span class="o">{</span>
+    <span class="o">...</span>
+    <span class="n">compile</span> <span class="s2">"org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"</span>
+<span class="o">}</span>
+
+<span class="n">buildscript</span> <span class="o">{</span>
+    <span class="n">ext</span><span class="o">.</span><span class="na">kotlin_version</span> <span class="o">=</span> <span class="s1">'1.0.1-2'</span>
+    <span class="n">repositories</span> <span class="o">{</span>
+        <span class="n">mavenCentral</span><span class="o">()</span>
+        <span class="n">jcenter</span><span class="o">()</span>
+    <span class="o">}</span>
+    <span class="n">dependencies</span> <span class="o">{</span>
+        <span class="n">classpath</span> <span class="s2">"org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"</span>
+        <span class="n">classpath</span> <span class="s2">"org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="n">repositories</span> <span class="o">{</span>
+    <span class="n">jcenter</span><span class="o">()</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>现在, 享受 Kotlin 带给你的快感吧(虽然一开始会感觉不习惯) :)</p>
+:ET

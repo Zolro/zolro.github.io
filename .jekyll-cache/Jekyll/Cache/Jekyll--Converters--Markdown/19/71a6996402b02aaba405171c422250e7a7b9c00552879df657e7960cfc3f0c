@@ -1,0 +1,364 @@
+I"�V<p>一般我们使用 Navigation Menu 的形式为</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+</pre></td><td class="rouge-code"><pre><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="nt">&lt;android.support.v4.widget.DrawerLayout</span>
+    <span class="na">android:id=</span><span class="s">"@+id/drawer_layout"</span>
+    <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+    <span class="na">xmlns:app=</span><span class="s">"http://schemas.android.com/apk/res-auto"</span>
+    <span class="na">xmlns:tools=</span><span class="s">"http://schemas.android.com/tools"</span>
+    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+    <span class="na">android:layout_height=</span><span class="s">"match_parent"</span>
+    <span class="na">android:fitsSystemWindows=</span><span class="s">"true"</span>
+    <span class="na">tools:openDrawer=</span><span class="s">"start"</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;include</span>
+        <span class="na">layout=</span><span class="s">"@layout/app_bar_main"</span>
+        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+        <span class="na">android:layout_height=</span><span class="s">"match_parent"</span><span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;android.support.design.widget.NavigationView</span>
+        <span class="na">android:id=</span><span class="s">"@+id/nav_view"</span>
+        <span class="na">android:layout_width=</span><span class="s">"wrap_content"</span>
+        <span class="na">android:layout_height=</span><span class="s">"match_parent"</span>
+        <span class="na">android:layout_gravity=</span><span class="s">"start"</span>
+        <span class="na">android:fitsSystemWindows=</span><span class="s">"true"</span>
+        <span class="na">app:headerLayout=</span><span class="s">"@layout/nav_header_main"</span>
+        <span class="na">app:menu=</span><span class="s">"@menu/activity_main_drawer"</span><span class="nt">/&gt;</span>
+
+<span class="nt">&lt;/android.support.v4.widget.DrawerLayout&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>再加上 v21 的主题:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="nt">&lt;style</span> <span class="na">name=</span><span class="s">"AppTheme.NoActionBar"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"windowActionBar"</span><span class="nt">&gt;</span>false<span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"windowNoTitle"</span><span class="nt">&gt;</span>true<span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"android:windowDrawsSystemBarBackgrounds"</span><span class="nt">&gt;</span>true<span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"android:statusBarColor"</span><span class="nt">&gt;</span>@android:color/transparent<span class="nt">&lt;/item&gt;</span>
+<span class="nt">&lt;/style&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>这种最标准的形式, 运行的效果就是这样的:</p>
+
+<p><img src="/assets/img/navigation-standard.png" width="200px" /></p>
+
+<p>这种效果看起来就好像状态栏浮在 NavigationLayout 之上, 感觉上会好很多</p>
+
+<p>不过, 很多时候, 我们想定义自己的 NavigationMenu, 但是当你换上你自己的 View 替换掉 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>NavigationView
+</pre></td></tr></tbody></table></code>
+的时候, 你会发现运行的效果有一点点差池:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre></td><td class="rouge-code"><pre><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="nt">&lt;android.support.v4.widget.DrawerLayout</span>
+    <span class="na">android:id=</span><span class="s">"@+id/drawer_layout"</span>
+    <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+    <span class="na">xmlns:tools=</span><span class="s">"http://schemas.android.com/tools"</span>
+    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+    <span class="na">android:layout_height=</span><span class="s">"match_parent"</span>
+    <span class="na">android:fitsSystemWindows=</span><span class="s">"true"</span>
+    <span class="na">tools:openDrawer=</span><span class="s">"start"</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;include</span>
+        <span class="na">layout=</span><span class="s">"@layout/app_bar_main"</span>
+        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+        <span class="na">android:layout_height=</span><span class="s">"match_parent"</span><span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;FrameLayout</span>
+        <span class="na">android:layout_gravity=</span><span class="s">"start"</span>
+        <span class="na">android:layout_width=</span><span class="s">"250dp"</span>
+        <span class="na">android:layout_height=</span><span class="s">"match_parent"</span>
+        <span class="na">android:fitsSystemWindows=</span><span class="s">"true"</span>
+        <span class="na">android:background=</span><span class="s">"@android:color/holo_blue_bright"</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;/FrameLayout&gt;</span>
+<span class="nt">&lt;/android.support.v4.widget.DrawerLayout&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>运行效果是这样的:</p>
+
+<p><img src="/assets/img/navigation_custom_1.png" width="200px" /></p>
+
+<p>我们查看 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>NavigationView
+</pre></td></tr></tbody></table></code> 的源代码, 发现它继承自 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>ScrimInsetsFrameLayout
+</pre></td></tr></tbody></table></code>,
+再查看 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>ScrimInsetsFrameLayout
+</pre></td></tr></tbody></table></code> 的源代码, 你就会发现, 原来 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>ScrimInsetsFrameLayout
+</pre></td></tr></tbody></table></code> 处理了和系统状态栏相交情况</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="nf">ScrimInsetsFrameLayout</span><span class="o">(</span><span class="nc">Context</span> <span class="n">context</span><span class="o">,</span> <span class="nc">AttributeSet</span> <span class="n">attrs</span><span class="o">,</span> <span class="kt">int</span> <span class="n">defStyleAttr</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">super</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">attrs</span><span class="o">,</span> <span class="n">defStyleAttr</span><span class="o">);</span>
+
+    <span class="kd">final</span> <span class="nc">TypedArray</span> <span class="n">a</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">obtainStyledAttributes</span><span class="o">(</span><span class="n">attrs</span><span class="o">,</span>
+            <span class="no">R</span><span class="o">.</span><span class="na">styleable</span><span class="o">.</span><span class="na">ScrimInsetsFrameLayout</span><span class="o">,</span> <span class="n">defStyleAttr</span><span class="o">,</span>
+            <span class="no">R</span><span class="o">.</span><span class="na">style</span><span class="o">.</span><span class="na">Widget_Design_ScrimInsetsFrameLayout</span><span class="o">);</span>
+    <span class="cm">/**
+     * 这个就是相交区域要画的颜色
+     */</span>
+    <span class="n">mInsetForeground</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">getDrawable</span><span class="o">(</span><span class="no">R</span><span class="o">.</span><span class="na">styleable</span><span class="o">.</span><span class="na">ScrimInsetsFrameLayout_insetForeground</span><span class="o">);</span>
+    <span class="n">a</span><span class="o">.</span><span class="na">recycle</span><span class="o">();</span>
+    <span class="n">setWillNotDraw</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span> <span class="c1">// No need to draw until the insets are adjusted</span>
+
+    <span class="cm">/**
+     * 监听和状态栏相交事件
+     */</span>
+    <span class="nc">ViewCompat</span><span class="o">.</span><span class="na">setOnApplyWindowInsetsListener</span><span class="o">(</span><span class="k">this</span><span class="o">,</span>
+            <span class="k">new</span> <span class="n">android</span><span class="o">.</span><span class="na">support</span><span class="o">.</span><span class="na">v4</span><span class="o">.</span><span class="na">view</span><span class="o">.</span><span class="na">OnApplyWindowInsetsListener</span><span class="o">()</span> <span class="o">{</span>
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="nc">WindowInsetsCompat</span> <span class="nf">onApplyWindowInsets</span><span class="o">(</span><span class="nc">View</span> <span class="n">v</span><span class="o">,</span>
+                        <span class="nc">WindowInsetsCompat</span> <span class="n">insets</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">mInsets</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">mInsets</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Rect</span><span class="o">();</span>
+                    <span class="o">}</span>
+                    <span class="n">mInsets</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">insets</span><span class="o">.</span><span class="na">getSystemWindowInsetLeft</span><span class="o">(),</span>
+                            <span class="n">insets</span><span class="o">.</span><span class="na">getSystemWindowInsetTop</span><span class="o">(),</span>
+                            <span class="n">insets</span><span class="o">.</span><span class="na">getSystemWindowInsetRight</span><span class="o">(),</span>
+                            <span class="n">insets</span><span class="o">.</span><span class="na">getSystemWindowInsetBottom</span><span class="o">());</span>
+                    <span class="n">onInsetsChanged</span><span class="o">(</span><span class="n">mInsets</span><span class="o">);</span>
+                    <span class="n">setWillNotDraw</span><span class="o">(</span><span class="n">mInsets</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">()</span> <span class="o">||</span> <span class="n">mInsetForeground</span> <span class="o">==</span> <span class="kc">null</span><span class="o">);</span>
+                    <span class="nc">ViewCompat</span><span class="o">.</span><span class="na">postInvalidateOnAnimation</span><span class="o">(</span><span class="nc">ScrimInsetsFrameLayout</span><span class="o">.</span><span class="na">this</span><span class="o">);</span>
+                    <span class="k">return</span> <span class="n">insets</span><span class="o">.</span><span class="na">consumeSystemWindowInsets</span><span class="o">();</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+<span class="o">}</span>
+
+<span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">draw</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="nc">Canvas</span> <span class="n">canvas</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">super</span><span class="o">.</span><span class="na">draw</span><span class="o">(</span><span class="n">canvas</span><span class="o">);</span>
+
+    <span class="kt">int</span> <span class="n">width</span> <span class="o">=</span> <span class="n">getWidth</span><span class="o">();</span>
+    <span class="kt">int</span> <span class="n">height</span> <span class="o">=</span> <span class="n">getHeight</span><span class="o">();</span>
+    <span class="cm">/**
+     * 画出相交部分的颜色
+     */</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">mInsets</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">mInsetForeground</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">sc</span> <span class="o">=</span> <span class="n">canvas</span><span class="o">.</span><span class="na">save</span><span class="o">();</span>
+        <span class="n">canvas</span><span class="o">.</span><span class="na">translate</span><span class="o">(</span><span class="n">getScrollX</span><span class="o">(),</span> <span class="n">getScrollY</span><span class="o">());</span>
+
+        <span class="c1">// Top</span>
+        <span class="n">mTempRect</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">width</span><span class="o">,</span> <span class="n">mInsets</span><span class="o">.</span><span class="na">top</span><span class="o">);</span>
+        <span class="n">mInsetForeground</span><span class="o">.</span><span class="na">setBounds</span><span class="o">(</span><span class="n">mTempRect</span><span class="o">);</span>
+        <span class="n">mInsetForeground</span><span class="o">.</span><span class="na">draw</span><span class="o">(</span><span class="n">canvas</span><span class="o">);</span>
+
+        <span class="c1">// Bottom</span>
+        <span class="n">mTempRect</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">height</span> <span class="o">-</span> <span class="n">mInsets</span><span class="o">.</span><span class="na">bottom</span><span class="o">,</span> <span class="n">width</span><span class="o">,</span> <span class="n">height</span><span class="o">);</span>
+        <span class="n">mInsetForeground</span><span class="o">.</span><span class="na">setBounds</span><span class="o">(</span><span class="n">mTempRect</span><span class="o">);</span>
+        <span class="n">mInsetForeground</span><span class="o">.</span><span class="na">draw</span><span class="o">(</span><span class="n">canvas</span><span class="o">);</span>
+
+        <span class="c1">// Left</span>
+        <span class="n">mTempRect</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">mInsets</span><span class="o">.</span><span class="na">top</span><span class="o">,</span> <span class="n">mInsets</span><span class="o">.</span><span class="na">left</span><span class="o">,</span> <span class="n">height</span> <span class="o">-</span> <span class="n">mInsets</span><span class="o">.</span><span class="na">bottom</span><span class="o">);</span>
+        <span class="n">mInsetForeground</span><span class="o">.</span><span class="na">setBounds</span><span class="o">(</span><span class="n">mTempRect</span><span class="o">);</span>
+        <span class="n">mInsetForeground</span><span class="o">.</span><span class="na">draw</span><span class="o">(</span><span class="n">canvas</span><span class="o">);</span>
+
+        <span class="c1">// Right</span>
+        <span class="n">mTempRect</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">width</span> <span class="o">-</span> <span class="n">mInsets</span><span class="o">.</span><span class="na">right</span><span class="o">,</span> <span class="n">mInsets</span><span class="o">.</span><span class="na">top</span><span class="o">,</span> <span class="n">width</span><span class="o">,</span> <span class="n">height</span> <span class="o">-</span> <span class="n">mInsets</span><span class="o">.</span><span class="na">bottom</span><span class="o">);</span>
+        <span class="n">mInsetForeground</span><span class="o">.</span><span class="na">setBounds</span><span class="o">(</span><span class="n">mTempRect</span><span class="o">);</span>
+        <span class="n">mInsetForeground</span><span class="o">.</span><span class="na">draw</span><span class="o">(</span><span class="n">canvas</span><span class="o">);</span>
+
+        <span class="n">canvas</span><span class="o">.</span><span class="na">restoreToCount</span><span class="o">(</span><span class="n">sc</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>知道了这个原理, 我们可以用这个 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>ScrimInsetsFrameLayout
+</pre></td></tr></tbody></table></code> 放置我们自定义的 Menu View,
+并可以用它的属性<code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>app:insetForeground
+</pre></td></tr></tbody></table></code>定义相交区域的颜色,
+或者根据 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>ScrimInsetsFrameLayout
+</pre></td></tr></tbody></table></code> 的代码写一个自己自定义View</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+</pre></td><td class="rouge-code"><pre><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="nt">&lt;android.support.v4.widget.DrawerLayout</span>
+    <span class="na">android:id=</span><span class="s">"@+id/drawer_layout"</span>
+    <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+    <span class="na">xmlns:app=</span><span class="s">"http://schemas.android.com/apk/res-auto"</span>
+    <span class="na">xmlns:tools=</span><span class="s">"http://schemas.android.com/tools"</span>
+    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+    <span class="na">android:layout_height=</span><span class="s">"match_parent"</span>
+    <span class="na">android:fitsSystemWindows=</span><span class="s">"true"</span>
+    <span class="na">tools:openDrawer=</span><span class="s">"start"</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;include</span>
+        <span class="na">layout=</span><span class="s">"@layout/app_bar_main"</span>
+        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+        <span class="na">android:layout_height=</span><span class="s">"match_parent"</span><span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;android.support.design.internal.ScrimInsetsFrameLayout</span>
+        <span class="na">android:layout_gravity=</span><span class="s">"start"</span>
+        <span class="na">android:layout_width=</span><span class="s">"250dp"</span>
+        <span class="na">android:layout_height=</span><span class="s">"match_parent"</span>
+        <span class="na">android:fitsSystemWindows=</span><span class="s">"true"</span>
+        <span class="na">android:background=</span><span class="s">"@android:color/holo_blue_bright"</span>
+        <span class="na">app:insetForeground=</span><span class="s">"#aaff0000"</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;/android.support.design.internal.ScrimInsetsFrameLayout&gt;</span>
+
+<span class="nt">&lt;/android.support.v4.widget.DrawerLayout&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>最后运行的效果是这样的:</p>
+
+<p><img src="/assets/img/navigation_custom_2.png" width="200px" /></p>
+:ET

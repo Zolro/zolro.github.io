@@ -1,0 +1,46 @@
+I"�<blockquote>
+
+  <p>这篇文章主要是记录我如果解决了这个发布问题, 具体的解决方案文件和教程我已经上传至 Github
+<a href="https://github.com/liungkejin/GradlePublish">https://github.com/liungkejin/GradlePublish</a></p>
+
+</blockquote>
+
+<p>之前的文章 <a href="https://liungkejin.github.io/2016/03/27/Publish-AAR-jcenter.html">Android Studio 发布项目到Maven/JCenter仓库</a>,
+将 Java 库发布到 Maven/JCenter 上.</p>
+
+<p>但是今天我打算将我的 Kotlin 库发布上去的时候, 发现了一些问题. 因为 Kotlin 文件不能用 javadoc工具来生成 Javadoc,
+导致了在执行 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>bintrayUpload
+</pre></td></tr></tbody></table></code> 任务的时候 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>javadocJar
+</pre></td></tr></tbody></table></code> <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>sourcesJar
+</pre></td></tr></tbody></table></code> 两个任务都不能 build 成功,
+虽然我可以把这两个任务去掉， 没有 *-sources.jar 和 *-javadoc.jar 一样也是可以发布到 Maven 上的,
+但是如果要发布到 JCenter 上就需要这两个文件了，如果没有则审核过不了</p>
+
+<blockquote>
+  <p>JCenter hosts Java applications that follow the Maven convention.
+In addition to the existing files, you will need a *-sources.jar, and optionally a *-javadoc.jar. Your files should be under a Maven path layout.
+(see <a href="">https://bintray.com/docs/usermanual/uploads/uploads_includingyourpackagesinjcenter.html</a>)</p>
+
+  <p>Once those files are added, we will be glad to include your package in JCenter.</p>
+</blockquote>
+
+<p>然后我在 Kotlin 社区找了一下关于生成 Javadoc 的讨论，最后发现 Kotlin 的 KDoc 项目已经没有了,
+但是 Kotlin 开发了 <a href="https://github.com/Kotlin/dokka">Dokka</a> , Dokka 是 kotlin 的一个文档生成引擎.</p>
+
+<blockquote>
+  <p>Dokka is a documentation engine for Kotlin, performing the same function as javadoc for Java. Just like Kotlin itself, Dokka fully supports mixed-language Java/Kotlin projects. It understands standard Javadoc comments in Java files and KDoc comments in Kotlin files, and can generate documentation in multiple formats including standard Javadoc, HTML and Markdown.</p>
+</blockquote>
+
+<p>但是又很不幸的是, 目前 dokka 的 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>dokka-android-gradle-plugin
+</pre></td></tr></tbody></table></code> 目前还没有 release, 而且 dokka 项目的 README
+也都是坑, 虽然这个 Android gradle plugin 没有 release, 不过他已经在上面写上用法了, 也没说明有没有 release,
+直至我在 bintray 上查看了他们的版本文件才知道确实没有这个 plugin…., 然后我试了一下使用 <code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>dokka-gradle-plugin
+</pre></td></tr></tbody></table></code>,
+但是我也没有弄成功, 可他的 README 上面明明就是这样写的</p>
+
+:ET
