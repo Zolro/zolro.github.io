@@ -1,0 +1,9 @@
+I"�<p>我的第一篇 github 博客, 本博客引用 <a href="https://github.com/liungkejin/liungkejin.github.io">liungkejin的github博客项目</a></p>
+
+<p>也要再次感谢 <a href="https://github.com">github</a> 提供的 Github Pages 功能!
+能让我免费且方便的搭建个人博客</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>System.out.println<span class="o">(</span><span class="s2">"你好, Github Pages!"</span><span class="o">)</span><span class="p">;</span> 
+</pre></td></tr></tbody></table></code></pre></div></div>
+:ET

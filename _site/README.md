@@ -1,5 +1,2 @@
-# zolro
-
-> 技术改变人生
-
-![Blog](/assets/img/blog.png)
+# zolro.github.io
+我的博客
